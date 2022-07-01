@@ -1,10 +1,12 @@
 import './App.css';
-import Student from './Pages/Student';
+import AddUser from './Pages/AddUser';
+import NotesPage from './Pages/NotesPage';
+import Studentpage from './Pages/StudentPage';
 
 function App() {
   return (
     <div className="App">
-      <Student />
+      <AddUser />
     </div>
   );
 }

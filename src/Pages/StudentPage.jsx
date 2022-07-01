@@ -60,7 +60,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   ];
   
 
-const Student = () => {
+const Studentpage = () => {
   return (
     <div >
         <Navbar />
@@ -72,7 +72,7 @@ const Student = () => {
         gap={2}
         marginTop={15}
         >
-        <h1> Hi welcome user!</h1>
+        <h1> Hi 👋.Welcome user!</h1>
         </Box>
     
         
@@ -122,4 +122,4 @@ const Student = () => {
   )
 }
 
-export default Student
+export default Studentpage
