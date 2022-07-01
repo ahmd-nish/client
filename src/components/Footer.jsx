@@ -7,14 +7,8 @@ const Footer = () => {
     <div>
      
 
-<footer class="footer-distributed">
-
-    <div class="footer-left">
-
-        
-        <p>Company Name &copy; 2015</p>
-    </div>
-
+<footer >
+        <p>All Rights reserved  &copy; since 1999</p>
 </footer>
     </div>
   )
