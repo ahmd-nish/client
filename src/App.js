@@ -1,12 +1,12 @@
 import './App.css';
-import AddUser from './Pages/AddUser';
-import NotesPage from './Pages/NotesPage';
-import Studentpage from './Pages/StudentPage';
+
+import ResetPassword from './Pages/ResetPassword';
+
 
 function App() {
   return (
     <div className="App">
-      <AddUser />
+      <ResetPassword />
     </div>
   );
 }

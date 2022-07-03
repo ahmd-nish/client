@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
   
 
-const AddUser = () => {
+const ResetPassword = () => {
 
   const classes = useStyles();
 
@@ -49,42 +49,41 @@ const AddUser = () => {
       <div className={classes.paper}>
       
         <Typography component="h1" variant="h5">
-          <h2>Add new user 👤</h2>
+          <h2>Hi user.. <br/> Welcome to the site👋</h2>
+          <h4>Please enter your new password</h4>
         </Typography>
         <form className={classes.form} >
           <Grid container spacing={2}>
             <Grid item xs={12} >
               <TextField
                 autoComplete="fname"
-                name="Tittle"
+                name="New Password"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="Name"
+                id="password"
+                type="password"
+                label="Password"
                 autoFocus
               />
             </Grid>
-        
-
+           
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
-                type="email"
+                type="password"
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="repeatPassword"
+                label="Re Enter Password"
+                name="repassword"
+                autoComplete="repassword"
               />
             </Grid>
 
 
-
-
             <Grid item xs={12} sx={{marginTop: 10}}>
-            <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Send invites 📧</Button>
+            <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>update passsword🔑</Button>
 
             </Grid>
           </Grid>
@@ -102,4 +101,4 @@ const AddUser = () => {
   )
 }
 
-export default AddUser
+export default ResetPassword
