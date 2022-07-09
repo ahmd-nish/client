@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from "react";
+import React,{useState} from "react";
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CssBaseline from "@material-ui/core/CssBaseline";

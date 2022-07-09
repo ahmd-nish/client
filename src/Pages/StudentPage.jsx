@@ -65,7 +65,7 @@ const StudentPage = () => {
       console.log(err);
     }
     
-  }, [])
+  }, [id])
 
 
   useEffect(()=>{
@@ -80,7 +80,7 @@ const StudentPage = () => {
     }catch(err){
       console.log(err);
     }
-  },[])
+  },[id])
 
   const gotoNotes = (subid) => {
     navigate(`/viewnotes/${subid}`);

@@ -10,10 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ArticleIcon from '@mui/icons-material/Article';
-import { pink } from '@mui/material/colors';
-import { useNavigate} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import Button from '@mui/material/Button';
 import axios from 'axios';
 
@@ -47,6 +44,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const Adminpage = () => {
   const [data, setData] = useState([]);
+  const [auth, setAuth] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     axios.get('http://localhost:5000/api/user/').then((res) => {
@@ -54,11 +52,27 @@ const Adminpage = () => {
       setData(res.data);
     })
   }, []);
+  
 
+  useEffect(() => {
+    try{
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('accountType');
+      if (token !== null && user === 'admin') {
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+    }catch(err){
+      console.log(err);
+    }
+    
+  }, [])
 
   return (
     <div >
         <Navbar />
+        {auth ? <>
         <Box
         isplay="flex"
         justifyContent="center"
@@ -145,6 +159,20 @@ const Adminpage = () => {
       </Table>
     </TableContainer>
     </Box>
+    </> : 
+    <> <Box
+    isplay="flex"
+    justifyContent="center"
+    alignItems="flex-start"
+    width="100%"
+    gap={2}
+    marginTop={15}
+    >
+    <h1> please Login as an Admin to the system to use this feature !</h1>
+    <Link to="/">
+    <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Login</Button>
+    </Link>
+    </Box></>}
 
 
         <Footer />

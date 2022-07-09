@@ -8,9 +8,10 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import axios from "axios";
 import swal from 'sweetalert';
-import { useNavigate} from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 
 
@@ -41,6 +42,7 @@ const AddUser = () => {
 
   const classes = useStyles();
   const navigate = useNavigate();
+  const [auth, setAuth] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -62,12 +64,27 @@ const AddUser = () => {
     });
   }
 
+  useEffect(() => {
+    try{
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('accountType');
+      if (token !== null && user === 'admin') {
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+    }catch(err){
+      console.log(err);
+    }
+    
+  }, [])
+
 
   return (
     <div >
         <Navbar />
       
-   
+        {auth ? <>
 
         <Container component="main" maxWidth="xs" className="review-container">
       <CssBaseline />
@@ -122,7 +139,20 @@ const AddUser = () => {
       </div>
     
     </Container>
-
+    </> : 
+    <> <Box
+    isplay="flex"
+    justifyContent="center"
+    alignItems="flex-start"
+    width="100%"
+    gap={2}
+    marginTop={15}
+    >
+    <h1> please Login as an Admin to the system to use this feature !</h1>
+    <Link to="/">
+    <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Login</Button>
+    </Link>
+    </Box></>}
 
         <Footer />
     </div>

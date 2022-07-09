@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-import {Link as Navigate , useNavigate} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 
 
 // import {Link as Navigate} from 'react-router-dom'import ResponsiveAppBar from './components/Navbar';
@@ -40,8 +40,8 @@ const theme = createTheme();
 
 const Login = () => {
 
+  // eslint-disable-next-line
   const [status, setStatus] = React.useState(false);
-  const [user , setUser] = React.useState(" ");
   const navigate = useNavigate()
   const [error, setError] = React.useState(" ");
 

@@ -8,7 +8,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from '@mui/material/Button';
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Box from '@mui/material/Box';
 import swal from 'sweetalert';
 import axios from "axios";
 
@@ -38,13 +39,30 @@ const useStyles = makeStyles((theme) => ({
 
 const EditNotes = () => {
   const id = useParams().id;
+  const [auth, setAuth] = useState(false);
 
   const classes = useStyles();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
+  // eslint-disable-next-line
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+
+  // eslint-disable-next-line
+  useEffect(() => {
+    try{
+      const token = localStorage.getItem('token');
+      if (token !== null ) {
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+    }catch(err){
+      console.log(err);
+    }
+    
+  }, [])
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/notes/single/${id}`).then((res) => {
@@ -56,7 +74,7 @@ const EditNotes = () => {
         
 
     });
-  }, []);
+  }, [id]);
 
 
   const handleSubmit = (e) => {
@@ -90,6 +108,8 @@ const EditNotes = () => {
   return (
     <div >
         <Navbar />
+
+        {auth ? <>
       
    
 
@@ -165,6 +185,22 @@ const EditNotes = () => {
       </div>
     
     </Container>
+    </> : <> 
+    <Box
+    isplay="flex"
+    justifyContent="center"
+    alignItems="flex-start"
+    width="100%"
+    gap={2}
+    marginTop={15}
+    >
+    <h1> please Login to the system to use this feature !</h1>
+    <Link to="/">
+    <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Login</Button>
+    </Link>
+    </Box>
+    
+    </>}
 
 
         <Footer />
