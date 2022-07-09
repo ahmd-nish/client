@@ -8,7 +8,14 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from '@mui/material/Button';
-import ReactPhoneInput from 'react-phone-input-mui';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker
+} from '@material-ui/pickers';
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +43,40 @@ const useStyles = makeStyles((theme) => ({
 const UserRegistrations = () => {
 
 
+const id = useParams().id;  
+var today = new Date();
+const [selectedDate, setSelectedDate] = useState(new Date(today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()));
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
+const [mobileNumber, setMobileNumber] = useState("");
+const navigate = useNavigate();
+
+
+const handleDateChange = (date) => {
+  
+  setSelectedDate(new Date(date).toISOString().split("T")[0]);
+};
+
+const handleSubmit=() =>{
+  axios.put(`http://localhost:5000/api/user/${id}`, {
+    firstName: firstName,
+    lastName: lastName,
+    mobile: mobileNumber,
+    dateOfBirth: selectedDate,
+    status:true
+  }).then((res)=>{
+    if (res.status === 200) {
+     console.log("user registration updated");
+      navigate(`/`);
+      localStorage.removeItem("token");
+      
+    }
+  }).catch((err)=>{
+    console.log(err)
+  })
+ 
+
+};
 
 
   const classes = useStyles();
@@ -63,6 +104,7 @@ const UserRegistrations = () => {
                 variant="outlined"
                 required
                 fullWidth
+                onChange={(e) => setFirstName(e.target.value)}
                 id="firstName"
                 label="First Name"
                 autoFocus
@@ -77,6 +119,7 @@ const UserRegistrations = () => {
                 variant="outlined"
                 required
                 fullWidth
+                onChange={(e) => setLastName(e.target.value)}
                 id="lastName"
                 label="Last Name"
                 autoFocus
@@ -91,6 +134,7 @@ const UserRegistrations = () => {
                 variant="outlined"
                 required
                 fullWidth
+                onChange={(e) => setMobileNumber(e.target.value)}
                 id="mobile"
                 label="Mobile"
                 autoFocus
@@ -102,16 +146,19 @@ const UserRegistrations = () => {
 
 
             <Grid item xs={12} >
-            <TextField
-              id="date"
-              label="Date of Birth"
-              type="date"
-              defaultValue="2017-05-24"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+               margin="normal"
+               id="date-picker-dialog"
+               label="Date picker dialog"
+               format="MM/dd/yyyy"
+               value={selectedDate}
+               onChange={handleDateChange}
+               KeyboardButtonProps={{
+                 'aria-label': 'change date',
+               }}
+             />
+              </MuiPickersUtilsProvider>
             </Grid>
 
 
@@ -121,7 +168,7 @@ const UserRegistrations = () => {
 
 
             <Grid item xs={12} sx={{marginTop: 10}}>
-            <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Send invites 📧</Button>
+            <Button variant="contained" onClick={()=> handleSubmit()} sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Save Details</Button>
 
             </Grid>
           </Grid>

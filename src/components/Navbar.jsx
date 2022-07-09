@@ -2,10 +2,20 @@
 import React, { useState, useEffect } from "react";
 import "./Navbar.css";
 import { CSSTransition } from "react-transition-group";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const navigate = useNavigate();
+
+
+  const logout = () => {
+      navigate(`/`);
+      localStorage.removeItem("token");
+      localStorage.removeItem("accountType");
+      
+  }
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 700px)");
@@ -40,7 +50,7 @@ export default function Navbar() {
       >
         <nav className="Nav">
           
-          <button>Logout</button>
+          <button onClick={()=>logout()}>Logout</button>
         </nav>
       </CSSTransition>
       <button onClick={toggleNav} className="Burger">

@@ -7,6 +7,8 @@ import StudentPage from './Pages/StudentPage';
 import UserRegistrations from './Pages/UserRegistrations';
 import Adminpage from './Pages/AdminPage';
 import NotesPage from './Pages/NotesPage';
+import ViewNotes from './Pages/ViewNotes';
+import EditNotes from './Pages/EditNotes';
 
 
 
@@ -18,10 +20,12 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/reset/:id" element={<ResetPassword />} />
           <Route path="/adduser" element={<AddUser />} />
-          <Route path="/studentpage" element={<StudentPage />} />
+          <Route path="/studentpage/:id" element={<StudentPage />} />
           <Route path="/userregistrations/:id" element={<UserRegistrations />} />
           <Route path="/adminpage/:id" element={<Adminpage />} />
           <Route path="/notespage/:id" element={<NotesPage />} />
+          <Route path="/viewnotes/:id" element={<ViewNotes />} />
+          <Route path="/editnotes/:id" element={<EditNotes />} />
         </Routes>
       </BrowserRouter>
     </div>

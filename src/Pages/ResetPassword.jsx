@@ -8,6 +8,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from '@mui/material/Button';
+import { useNavigate, useParams } from "react-router-dom";
+const axios = require('axios');
 
 
 
@@ -34,6 +36,38 @@ const useStyles = makeStyles((theme) => ({
   
 
 const ResetPassword = () => {
+  const id = useParams().id;
+  const navigate = useNavigate();
+
+  const handleSubmit=() =>{
+    if(password === confirmPassword){
+      setError("")
+     console.log("password match")
+     axios.put(`http://localhost:5000/api/user/pass/${id}`, {
+       password: password
+     }).then((res)=>{
+       if (res.status === 200) {
+        console.log("password changed");
+         navigate(`/userregistrations/${id}`);
+         
+       }
+     }).catch((err)=>{
+       console.log(err)
+     }
+     )
+    }
+    else{
+      setError("passwords does not match")
+      console.log("password not match")
+    }
+  }
+
+ 
+
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const classes = useStyles();
 
@@ -64,6 +98,10 @@ const ResetPassword = () => {
                 id="password"
                 type="password"
                 label="Password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
                 autoFocus
               />
             </Grid>
@@ -77,13 +115,21 @@ const ResetPassword = () => {
                 id="repeatPassword"
                 label="Re Enter Password"
                 name="repassword"
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setError("");
+                }}
                 autoComplete="repassword"
               />
             </Grid>
 
 
+            <Grid item xs={12}>
+            <h3 style={{color: 'red', fontSize: '16px' , textAlign: 'center'}}>{error}</h3>
+            </Grid>
+            
             <Grid item xs={12} sx={{marginTop: 10}}>
-            <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>update passsword🔑</Button>
+            <Button variant="contained" onClick={()=> handleSubmit()}  sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>update passsword🔑</Button>
 
             </Grid>
           </Grid>

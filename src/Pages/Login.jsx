@@ -12,6 +12,9 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
+import {Link as Navigate , useNavigate} from 'react-router-dom'
+
 
 // import {Link as Navigate} from 'react-router-dom'import ResponsiveAppBar from './components/Navbar';
 
@@ -37,15 +40,55 @@ const theme = createTheme();
 
 const Login = () => {
 
+  const [status, setStatus] = React.useState(false);
+  const [user , setUser] = React.useState(" ");
+  const navigate = useNavigate()
+  const [error, setError] = React.useState(" ");
 
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    try {
+      axios.post("http://localhost:5000/api/auth/",{
       email: data.get('email'),
-      password: data.get('password'),
+      password: data.get('password')
+    }).then((res)=>{
+      if (res.status === 200) {
+        console.log(res.data.data)
+        console.log(res.data.status)
+        console.log(res.data.accountType)
+        console.log(res.data.userId)
+        localStorage.setItem('token', res.data.data);
+        localStorage.setItem('accountType', res.data.accountType);
+        setStatus(res.data.status)
+        const id =res.data.userId;
+        console.log(id)
+        alert("Login Successful");
+        if(res.data.status === true){
+          if(res.data.accountType === "admin"){
+            navigate(`/adminpage/${id}`);
+          }
+          else{
+            navigate(`/studentpage/${id}`);
+          }
+          
+        }else{
+          navigate(`/reset/${id}`);
+        }
+        
+        
+      }else{
+        console.log(res)
+        
+      }
+    }).catch((err)=>{
+      setError("Invalid credentials");
+      //alert("Invalid credentials");
     });
+    } catch (error) {
+      alert("Invalid credentials");
+    }
   };
 
 
@@ -95,6 +138,7 @@ const Login = () => {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(e) => setError("")}
               />
               <TextField
                 margin="normal"
@@ -104,8 +148,10 @@ const Login = () => {
                 label="Password"
                 type="password"
                 id="password"
+                onChange={(e) => setError("")}
                 autoComplete="current-password"
               />
+              <h3>{error}</h3>
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"

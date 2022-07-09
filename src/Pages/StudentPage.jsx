@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { styled } from '@mui/material/styles';
@@ -12,9 +12,12 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArticleIcon from '@mui/icons-material/Article';
+import EditIcon from '@mui/icons-material/Edit';
 import { pink } from '@mui/material/colors';
-
+import {Link, useNavigate, useParams } from 'react-router-dom'
+import swal from 'sweetalert';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 
 
@@ -41,29 +44,109 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   }));
   
-  function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-  ) {
-    return { name, calories, fat, carbs, protein };
-  }
-  
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
-  
+
 
 const StudentPage = () => {
+  const id = useParams().id;
+  const [auth, setAuth] = React.useState(false);
+  const [data, setData] = React.useState([]);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    try{
+      const token = localStorage.getItem('token');
+      if (token !== null) {
+        setAuth(true);
+      } else {
+        setAuth(false);
+      }
+    }catch(err){
+      console.log(err);
+    }
+    
+  }, [])
+
+
+  useEffect(()=>{
+    try{
+      axios.get(`http://localhost:5000/api/notes/${id}`).then((res)=>{
+        console.log(res.data);
+        setData(res.data);
+      }).catch((err)=>{
+        console.log(err);
+      }
+      )
+    }catch(err){
+      console.log(err);
+    }
+  },[])
+
+  const gotoNotes = (subid) => {
+    navigate(`/viewnotes/${subid}`);
+    console.log(subid);
+
+  }
+
+
+  const editNotes = (subid) => {
+    navigate(`/editnotes/${subid}`);
+    console.log(subid);
+
+  }
+
+
+  
+
+  const deleteNotes = (subid) =>{
+
+    swal({
+        text : "Are you sure you want to delete?",
+        buttons: true,
+        dangerMode: true,
+    }).then( (willDelete)=>{
+        if(willDelete){
+            axios.delete(`http://localhost:5000/api/notes/${subid}`).then(
+                (response)=>{
+                    swal({
+                        title : 'Done !',
+                        text  : 'Note is deleted',
+                        icon  : 'success',
+                        timer : 2000,
+                        button : false,
+                    })
+                    try{
+                      axios.get(`http://localhost:5000/api/notes/${id}`).then((res)=>{
+                        console.log(res.data);
+                        setData(res.data);
+                      }).catch((err)=>{
+                        console.log(err);
+                      }
+                      )
+                    }catch(err){
+                      console.log(err);
+                    }
+                }
+            )
+        } else {
+            swal({
+                text : "Note is not deleted !",
+                timer:2000,
+                buttons:false,
+            })
+        }
+    })
+     
+}
+
+
+
+
   return (
     <div >
         <Navbar />
+        {auth ? 
+        <>
         <Box
         isplay="flex"
         justifyContent="center"
@@ -75,7 +158,9 @@ const StudentPage = () => {
         <h1> Hi 👋.Welcome user!</h1>
         </Box>
     
-        
+        <Link style={{left: '90%', alignItems: 'end',}} to={`/notespage/${id}`}>
+        <Button variant="contained" sx={{fontSize:16,left:'42%' ,margin:5,alignSelf:'', fontWeight: 'bold' , backgroundColor: 'black'}}>Add+</Button>
+        </Link>
         <Box
         display="flex"
         flexDirection="column"
@@ -83,30 +168,29 @@ const StudentPage = () => {
         alignItems="center"
         minHeight="45vh"
          component="span" sx={{ p: 2,justify: 'center',align: 'center' }}>
-        <Button variant="contained" sx={{fontSize:16,left:'42%' ,margin:5,alignSelf:'', fontWeight: 'bold' , backgroundColor: 'black'}}>Add+</Button>
+            
         <TableContainer component={Paper} sx={{width: '90%'}}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-            <StyledTableCell align="center">Calories</StyledTableCell>
-            <StyledTableCell align="center">Fat&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="center">Carbs&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="center">Protein&nbsp;(g)</StyledTableCell>
+            <StyledTableCell>Title</StyledTableCell>
+            <StyledTableCell align="center">Description</StyledTableCell>
+            <StyledTableCell align="center">Created</StyledTableCell>
+            <StyledTableCell align="center">Actions</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
+          {data.map((row) => (
+            <StyledTableRow key={row._id}>
               <StyledTableCell component="th" scope="row">
-                {row.name}
+                {row.Title}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.calories}</StyledTableCell>
-              <StyledTableCell align="center">{row.fat}</StyledTableCell>
-              <StyledTableCell align="center">{row.carbs}</StyledTableCell>
+              <StyledTableCell align="center">{row.Description}</StyledTableCell>
+              <StyledTableCell align="center">{row.createdAt}</StyledTableCell>
               <StyledTableCell align="center">
-                <Button ><ArticleIcon/></Button>
-                <Button ><DeleteIcon sx={{ color: pink[500] }}/></Button>
+                <Button onClick={()=>gotoNotes(row._id)} ><ArticleIcon/></Button>
+                <Button onClick={()=>editNotes(row._id)} ><EditIcon/></Button>
+                <Button onClick={()=>deleteNotes(row._id)} ><DeleteIcon sx={{ color: pink[500] }}/></Button>
                 
               </StyledTableCell>
             </StyledTableRow>
@@ -115,6 +199,23 @@ const StudentPage = () => {
       </Table>
     </TableContainer>
     </Box>
+    </>
+    :
+    <> <Box
+    isplay="flex"
+    justifyContent="center"
+    alignItems="flex-start"
+    width="100%"
+    gap={2}
+    marginTop={15}
+    >
+    <h1> please Login to the system to use this feature !</h1>
+    <Link to="/">
+    <Button variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Login</Button>
+    </Link>
+    </Box></>
+    }
+
 
 
         <Footer />
@@ -123,3 +224,6 @@ const StudentPage = () => {
 }
 
 export default StudentPage
+
+
+

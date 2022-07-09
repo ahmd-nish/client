@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { styled } from '@mui/material/styles';
@@ -13,8 +13,9 @@ import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArticleIcon from '@mui/icons-material/Article';
 import { pink } from '@mui/material/colors';
-
+import { useNavigate} from "react-router-dom";
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 
 
@@ -40,27 +41,21 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       border: 0,
     },
   }));
-  
-  function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number,
-  ) {
-    return { name, calories, fat, carbs, protein };
-  }
-  
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
+ 
+
   
 
 const Adminpage = () => {
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/user/').then((res) => {
+      console.log(res.data);
+      setData(res.data);
+    })
+  }, []);
+
+
   return (
     <div >
         <Navbar />
@@ -83,31 +78,66 @@ const Adminpage = () => {
         alignItems="center"
         minHeight="45vh"
          component="span" sx={{ p: 2,justify: 'center',align: 'center' }}>
-        <Button variant="contained" sx={{fontSize:16,left:'42%' ,margin:5,alignSelf:'', fontWeight: 'bold' , backgroundColor: 'black'}}>Add+</Button>
+        <Button onClick={() => navigate('/adduser')}  variant="contained" sx={{fontSize:16,left:'42%' ,margin:5,alignSelf:'', fontWeight: 'bold' , backgroundColor: 'black'}}>Add+</Button>
         <TableContainer component={Paper} sx={{width: '90%'}}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Dessert (100g serving)</StyledTableCell>
-            <StyledTableCell align="center">Calories</StyledTableCell>
-            <StyledTableCell align="center">Fat&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="center">Carbs&nbsp;(g)</StyledTableCell>
-            <StyledTableCell align="center">Protein&nbsp;(g)</StyledTableCell>
+            <StyledTableCell>First Name</StyledTableCell>
+            <StyledTableCell align="center">Lastname</StyledTableCell>
+            <StyledTableCell align="center">Type</StyledTableCell>
+            <StyledTableCell align="center">Status</StyledTableCell>
+            <StyledTableCell align="center">Actions</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
+          {data.map((row) => (
+            <StyledTableRow key={row._id}>
               <StyledTableCell component="th" scope="row">
-                {row.name}
+                {row.firstName}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.calories}</StyledTableCell>
-              <StyledTableCell align="center">{row.fat}</StyledTableCell>
-              <StyledTableCell align="center">{row.carbs}</StyledTableCell>
+              <StyledTableCell align="center">{row.lastName}</StyledTableCell>
               <StyledTableCell align="center">
-                <Button ><ArticleIcon/></Button>
-                <Button ><DeleteIcon sx={{ color: pink[500] }}/></Button>
-                
+              {row.accountType === "admin" ? (
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "#75E6DA", color: "black" , fontWeight: 'bold'}}
+                    size="small"
+                  >
+                    Admin
+                  </Button>
+                )  : (
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "#FFCB2E" , color: "black" , fontWeight: 'bold'}}
+                    size="small"
+                  >
+                    User
+                  </Button>
+                )}
+              
+              </StyledTableCell>
+              <StyledTableCell align="center">
+              {row.status === true ? (
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "#90EE90", color: "black" , fontWeight: 'bold'}}
+                    size="small"
+                  >
+                    Active
+                  </Button>
+                )  : (
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "#ffcccb" , color: "black" , fontWeight: 'bold'}}
+                    size="small"
+                  >
+                    Invited
+                  </Button>
+                )}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <Button >View</Button>
               </StyledTableCell>
             </StyledTableRow>
           ))}

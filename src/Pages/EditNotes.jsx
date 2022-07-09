@@ -8,10 +8,9 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Button from '@mui/material/Button';
-import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import swal from 'sweetalert';
-import { useNavigate} from "react-router-dom";
-
+import axios from "axios";
 
 
 
@@ -37,30 +36,55 @@ const useStyles = makeStyles((theme) => ({
 
   
 
-const AddUser = () => {
+const EditNotes = () => {
+  const id = useParams().id;
 
   const classes = useStyles();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [notes, setNotes] = useState("");
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
 
-  const sendInvite = () => {
-    console.log(name, email);
-    axios.post(`http://localhost:5000/api/tempUser`, {
-      name: name,
-      email: email,
-      status: false,
-      accountType: "user"
-    }).then((res) => {
+  useEffect(() => {
+    axios.get(`http://localhost:5000/api/notes/single/${id}`).then((res) => {
       console.log(res.data);
-      swal("Success!", "Invite sent!", "success");
-      navigate(-1);
-      
-    }).catch((err) => {
-      swal("Error!", "Something went wrong!", "error");
-      console.log(err);
+        setData(res.data);
+        setTitle(res.data.Title);
+        setDescription(res.data.Description);
+        setNotes(res.data.Content);
+        
+
     });
-  }
+  }, []);
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (title === "" || description === "" || notes === "") {
+      swal("Warning!", "Text fields cannot be empty!", "error");
+    } else {
+      axios.put(`http://localhost:5000/api/notes/${id}`, {
+        Title : title,
+        Description : description,
+        Content : notes
+      }).then((res) => {
+        if (res.status === 200) {
+          swal("Success!", "Notes added successfully!", "success");
+          navigate(-1);
+        }
+
+      }).catch((err) => {
+        swal("Error!", "Something went wrong!", "error");
+        console.log(err);
+      })
+
+    }
+}
+
+
+ 
 
 
   return (
@@ -74,7 +98,7 @@ const AddUser = () => {
       <div className={classes.paper}>
       
         <Typography component="h1" variant="h5">
-          <h2>Add new user 👤</h2>
+          <h2>Add your Notes..✍️ </h2>
         </Typography>
         <form className={classes.form} >
           <Grid container spacing={2}>
@@ -83,35 +107,54 @@ const AddUser = () => {
                 autoComplete="fname"
                 name="Tittle"
                 variant="outlined"
+                value={title}
                 required
                 fullWidth
                 id="firstName"
-                label="Name"
+                label="Title"
                 autoFocus
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </Grid>
-        
-
+           
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
+                value={description}
                 required
                 type="email"
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Description"
                 name="email"
                 autoComplete="email"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Grid>
+
+          
+
+
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                value={notes}
+                required
+                fullWidth
+                multiline
+                maxRows={10}
+                name="Review"
+                label="Notes"
+                id="Review"
+                autoComplete="Your Review"
+                onChange={(e) => setNotes(e.target.value)}
               />
             </Grid>
 
 
 
-
             <Grid item xs={12} sx={{marginTop: 10}}>
-            <Button onClick={()=>sendInvite()} variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Send invites 📧</Button>
+            <Button onClick={(e)=>handleSubmit(e)}  variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Update Notes ✍️</Button>
 
             </Grid>
           </Grid>
@@ -129,4 +172,4 @@ const AddUser = () => {
   )
 }
 
-export default AddUser
+export default EditNotes;
