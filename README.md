@@ -1,13 +1,7 @@
-# Notes Api
+# Notes App
 
 Description: This is repository has a collection of APIs that is needed to run the Notes management system.
 
-
-## Disclaimer
-
-* While Submitting i had to expose the dot env file which makes the starting of the api easier.
-* The mail address and the password is exposed in nodemailer is only for the test purposes.
-* These will be removed after the evaluation process 
 
 
 ## Installation
