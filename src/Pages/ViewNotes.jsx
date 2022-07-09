@@ -45,7 +45,9 @@ const ViewNotes = () => {
   const classes = useStyles();
   
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/notes/single/${id}`).then((res) => {
+    axios.post(`http://localhost:5000/api/notes/single/${id}`,{
+      token: localStorage.getItem("token")
+    }).then((res) => {
       setNotes(res.data);
     });
   }, [id]);

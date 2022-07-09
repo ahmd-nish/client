@@ -51,11 +51,15 @@ const StudentPage = () => {
   const [auth, setAuth] = React.useState(false);
   const [data, setData] = React.useState([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  // eslint-disable-next-line
+  const [ authToken, setAuthToken] = React.useState(token);
 
 
   useEffect(() => {
     try{
-      const token = localStorage.getItem('token');
+      
+      console.log(token);
       if (token !== null) {
         setAuth(true);
       } else {
@@ -65,12 +69,14 @@ const StudentPage = () => {
       console.log(err);
     }
     
-  }, [id])
+  }, [token])
 
 
   useEffect(()=>{
     try{
-      axios.get(`http://localhost:5000/api/notes/${id}`).then((res)=>{
+      axios.post(`http://localhost:5000/api/notes/${id}`,{
+        token: authToken
+      }).then((res)=>{
         console.log(res.data);
         setData(res.data);
       }).catch((err)=>{
@@ -80,7 +86,7 @@ const StudentPage = () => {
     }catch(err){
       console.log(err);
     }
-  },[id])
+  },[authToken,id])
 
   const gotoNotes = (subid) => {
     navigate(`/viewnotes/${subid}`);
@@ -106,7 +112,9 @@ const StudentPage = () => {
         dangerMode: true,
     }).then( (willDelete)=>{
         if(willDelete){
-            axios.delete(`http://localhost:5000/api/notes/${subid}`).then(
+            axios.post(`http://localhost:5000/api/notes/delete/${subid}`,{
+                token: authToken,
+            }).then(
                 (response)=>{
                     swal({
                         title : 'Done !',
@@ -116,7 +124,9 @@ const StudentPage = () => {
                         button : false,
                     })
                     try{
-                      axios.get(`http://localhost:5000/api/notes/${id}`).then((res)=>{
+                      axios.post(`http://localhost:5000/api/notes/${id}`,{
+                        token: authToken
+                      }).then((res)=>{
                         console.log(res.data);
                         setData(res.data);
                       }).catch((err)=>{

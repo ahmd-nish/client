@@ -63,7 +63,8 @@ const handleSubmit=() =>{
     lastName: lastName,
     mobile: mobileNumber,
     dateOfBirth: selectedDate,
-    status:true
+    status:true,
+    token : localStorage.getItem("token")
   }).then((res)=>{
     if (res.status === 200) {
      console.log("user registration updated");

@@ -65,7 +65,9 @@ const EditNotes = () => {
   }, [])
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/notes/single/${id}`).then((res) => {
+    axios.post(`http://localhost:5000/api/notes/single/${id}`,{
+      token: localStorage.getItem("token")
+    }).then((res) => {
       console.log(res.data);
         setData(res.data);
         setTitle(res.data.Title);
@@ -86,7 +88,8 @@ const EditNotes = () => {
       axios.put(`http://localhost:5000/api/notes/${id}`, {
         Title : title,
         Description : description,
-        Content : notes
+        Content : notes,
+        token: localStorage.getItem("token")
       }).then((res) => {
         if (res.status === 200) {
           swal("Success!", "Notes added successfully!", "success");

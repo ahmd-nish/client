@@ -57,7 +57,8 @@ const NotesPage = () => {
         SubId : id,
         Title : title,
         Description : description,
-        Content : notes
+        Content : notes,
+        token: localStorage.getItem("token")
       }).then((res) => {
         if (res.status === 200) {
           swal("Success!", "Notes added successfully!", "success");

@@ -52,7 +52,8 @@ const AddUser = () => {
       name: name,
       email: email,
       status: false,
-      accountType: "user"
+      accountType: "user",
+      token: localStorage.getItem("token")
     }).then((res) => {
       console.log(res.data);
       swal("Success!", "Invite sent!", "success");

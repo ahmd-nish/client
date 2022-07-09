@@ -47,7 +47,9 @@ const Adminpage = () => {
   const [auth, setAuth] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get('http://localhost:5000/api/user/').then((res) => {
+    axios.post('http://localhost:5000/api/user/all/',{
+      token: localStorage.getItem('token')
+    }).then((res) => {
       console.log(res.data);
       setData(res.data);
     })
