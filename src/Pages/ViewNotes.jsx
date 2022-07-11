@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Loading from './Loading';
+
 
 
 
@@ -39,16 +41,21 @@ const ViewNotes = () => {
   const id = useParams().id;
   const [auth, setAuth] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
 
   const classes = useStyles();
   
   useEffect(() => {
+    setLoading(true);
     axios.post(`http://localhost:5000/api/notes/single/${id}`,{
       token: localStorage.getItem("token")
     }).then((res) => {
       setNotes(res.data);
+      setTimeout(() => {
+        setLoading(false)
+     }, 500)
     });
   }, [id]);
 
@@ -77,8 +84,9 @@ const ViewNotes = () => {
 
         <Container component="main" maxWidth="md" className="review-container">
       <CssBaseline />
-      <div className={classes.paper}>
       
+      <div className={classes.paper}>
+      {loading ? <Loading style={{marginTop:550}} /> : <>
         <Typography component="h1" variant="h5">
           <h1>{notes.Title}</h1>
         </Typography>
@@ -90,6 +98,7 @@ const ViewNotes = () => {
         <Typography sx={{fontSize:12}}>
           <p>{notes.Content}</p>
         </Typography>
+        </>}
 
         <Button onClick={() => navigate(-1)} variant="contained" sx={{fontSize:16, fontWeight: 'bold' , backgroundColor: 'black'}}>Back🔙</Button>
         

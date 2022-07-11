@@ -70,7 +70,7 @@ const Adminpage = () => {
       setData(res.data);
       setTimeout(() => {
         setLoading(false)
-     }, 800)
+     }, 500)
       //setLoading(false);
     })
   }, []);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { styled } from '@mui/material/styles';
@@ -18,6 +18,8 @@ import {Link, useNavigate, useParams } from 'react-router-dom'
 import swal from 'sweetalert';
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import Loading from './Loading';
+
 
 
 
@@ -53,6 +55,7 @@ const StudentPage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const userName = localStorage.getItem('username');
+  const [loading, setLoading] = useState(false);
   // eslint-disable-next-line
   const [ authToken, setAuthToken] = React.useState(token);
 
@@ -75,11 +78,15 @@ const StudentPage = () => {
 
   useEffect(()=>{
     try{
+      setLoading(true);
       axios.post(`http://localhost:5000/api/notes/${id}`,{
         token: authToken
       }).then((res)=>{
         console.log(res.data);
         setData(res.data);
+        setTimeout(() => {
+          setLoading(false)
+       }, 500)
       }).catch((err)=>{
         console.log(err);
       }
@@ -171,7 +178,8 @@ const StudentPage = () => {
     
         <Link style={{left: '90%', alignItems: 'end',}} to={`/notespage/${id}`}>
         <Button variant="contained" sx={{fontSize:16,left:'42%' ,margin:5,alignSelf:'', fontWeight: 'bold' , backgroundColor: 'black'}}>Add+</Button>
-        </Link>
+        </Link>        
+        {loading ? <Loading /> : <>
         <Box
         display="flex"
         flexDirection="column"
@@ -210,6 +218,7 @@ const StudentPage = () => {
       </Table>
     </TableContainer>
     </Box>
+    </>}
     </>
     :
     <> <Box
