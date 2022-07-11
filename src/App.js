@@ -9,6 +9,7 @@ import Adminpage from './Pages/AdminPage';
 import NotesPage from './Pages/NotesPage';
 import ViewNotes from './Pages/ViewNotes';
 import EditNotes from './Pages/EditNotes';
+import Loading from './Pages/Loading';
 
 
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/notespage/:id" element={<NotesPage />} />
           <Route path="/viewnotes/:id" element={<ViewNotes />} />
           <Route path="/editnotes/:id" element={<EditNotes />} />
+          <Route path="/loading" element={<Loading />} />
         </Routes>
       </BrowserRouter>
     </div>

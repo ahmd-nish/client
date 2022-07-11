@@ -15,6 +15,7 @@ export default function Navbar() {
       navigate(`/`);
       localStorage.removeItem("token");
       localStorage.removeItem("accountType");
+      localStorage.removeItem("username");
       
   }
 

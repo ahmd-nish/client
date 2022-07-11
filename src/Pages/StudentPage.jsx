@@ -52,6 +52,7 @@ const StudentPage = () => {
   const [data, setData] = React.useState([]);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const userName = localStorage.getItem('username');
   // eslint-disable-next-line
   const [ authToken, setAuthToken] = React.useState(token);
 
@@ -165,7 +166,7 @@ const StudentPage = () => {
         gap={2}
         marginTop={15}
         >
-        <h1> Hi 👋.Welcome user!</h1>
+        <h1> Hi 👋.Welcome {userName}!</h1>
         </Box>
     
         <Link style={{left: '90%', alignItems: 'end',}} to={`/notespage/${id}`}>
